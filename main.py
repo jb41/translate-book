@@ -45,7 +45,7 @@ def split_html_by_sentence(html_str, max_chunk_size=2000):
 
 def system_prompt(from_lang, to_lang):
     p  = "You are an %s-to-%s translator. " % (from_lang, to_lang)
-    p += "Keep all special characters and HTML tags as in the source text. Return only Polish translation."
+    p += "Keep all special characters and HTML tags as in the source text. Return only %s translation." % to_lang
     return p
 
 
