@@ -16,7 +16,7 @@ def read_config(config_file):
     return config
 
 
-def split_html_by_sentence(html_str, max_chunk_size=2000):
+def split_html_by_sentence(html_str, max_chunk_size=10000):
     sentences = html_str.split('. ')
 
     chunks = []
