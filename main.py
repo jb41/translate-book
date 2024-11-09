@@ -93,7 +93,7 @@ def translate(client, input_epub_path, output_epub_path, from_chapter=0, to_chap
     epub.write_epub(output_epub_path, book, {})
 
 
-def show_chapters(input_epub_path):
+def show_chapters(input_epub_path, client=None, from_lang=None, to_lang=None):
     book = epub.read_epub(input_epub_path)
 
     current_chapter = 1
@@ -105,6 +105,11 @@ def show_chapters(input_epub_path):
             soup = BeautifulSoup(item.content, 'html.parser')
             chapter_beginning = soup.text[0:250]
             chapter_beginning = re.sub(r'\n{2,}', '\n', chapter_beginning)
+
+            if client and from_lang and to_lang:
+                print("\tTranslating preview of chapter %d..." % current_chapter)
+                chapter_beginning = translate_text(client, chapter_beginning, from_lang, to_lang)
+
             print(chapter_beginning + "\n\n")
 
             current_chapter += 1
@@ -129,6 +134,9 @@ if __name__ == "__main__":
     # Create the parser for the "show-chapters" mode
     parser_show = subparsers.add_parser('show-chapters', help='Show the list of chapters.')
     parser_show.add_argument('--input', required=True, help='Input file path.')
+    parser_show.add_argument('--config', help='Configuration file path.')
+    parser_show.add_argument('--from-lang', help='Source language.')
+    parser_show.add_argument('--to-lang', help='Target language.')
 
     # Parse the arguments
     args = parser.parse_args()
@@ -145,7 +153,17 @@ if __name__ == "__main__":
         translate(openai_client, args.input, args.output, from_chapter, to_chapter, from_lang, to_lang)
 
     elif args.mode == 'show-chapters':
-        show_chapters(args.input)
+        client = None
+        from_lang = None
+        to_lang = None
+
+        if args.config and args.from_lang and args.to_lang:
+            config = read_config(args.config)
+            client = OpenAI(api_key=config['openai']['api_key'])
+            from_lang = args.from_lang
+            to_lang = args.to_lang
+
+        show_chapters(args.input, client=client, from_lang=from_lang, to_lang=to_lang)
 
     else:
         parser.print_help()

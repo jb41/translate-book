@@ -31,6 +31,11 @@ python main.py show-chapters --input yourbook.epub
 
 This command will display all the chapters, helping you to plan your translation process effectively.
 
+You can also translate the beginning of each chapter to you target language like so:
+```bash
+python main.py show-chapters --input yourbook.epub --config config.yaml --from-lang EN --to-lang PL
+```
+
 ### Translate Mode
 
 #### Basic Usage
