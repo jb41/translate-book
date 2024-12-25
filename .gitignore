@@ -3,3 +3,5 @@ config.yml
 books/
 .DS_Store
 venv/
+
+data/
