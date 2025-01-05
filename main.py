@@ -43,16 +43,20 @@ def split_html_by_sentence(html_str, max_chunk_size=10000):
     return chunks
 
 
-def system_prompt(from_lang, to_lang):
-    p  = "You are an %s-to-%s translator. " % (from_lang, to_lang)
-    p += "Keep all special characters and HTML tags as in the source text. Return only %s translation." % to_lang
-    return p
+def system_prompt(from_lang: str, to_lang: str) -> str:
+    return (
+        f"You are an {from_lang}-to-{to_lang} specialized translator. "
+        f"Keep all special characters and HTML tags as in the source text. "
+        f"Your translation should be in {to_lang} only. "
+        f"Ensure the translation is comfortable to read by avoiding overly literal translations. "
+        f"Maintain readability and consistency with the source text."
+    )
 
 
 def translate_chunk(client, text, from_lang='EN', to_lang='PL'):
     response = client.chat.completions.create(
-        model='gpt-4o',
-        temperature=0.2,
+        model='gpt-4o-mini',
+        temperature=0.3,
         messages=[
             { 'role': 'system', 'content': system_prompt(from_lang, to_lang) },
             { 'role': 'user', 'content': text },
